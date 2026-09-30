@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CareFlow — Customer Operations Workspace</title>
+
+<style>
+:root {
+  --bg: #f7f5f0;
+  --card: #ffffff;
+  --text: #292824;
+  --muted: #77736b;
+  --line: #e8e4dc;
+  --accent: #6f8175;
+  --accent-soft: #e9eee9;
+  --warning: #f3ead8;
+  --danger: #f3dddd;
+  --shadow: 0 8px 30px rgba(40,38,32,.06);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 235px;
+  background: #fff;
+  border-right: 1px solid var(--line);
+  padding: 28px 18px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+}
+
+.brand {
+  padding: 0 10px 30px;
+}
+
+.brand h1 {
+  font-size: 21px;
+  margin: 0;
+  letter-spacing: -.5px;
+}
+
+.brand p {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 5px 0 0;
+}
+
+.nav button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  padding: 11px 12px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+  color: var(--muted);
+}
+
+.nav button:hover,
+.nav button.active {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.main {
+  margin-left: 235px;
+  width: calc(100% - 235px);
+  padding: 38px 42px;
+  max-width: 1400px;
+}
+
+/* HEADER */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 28px;
+  letter-spacing: -.8px;
+}
+
+.page-header p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.badge {
+  background: var(--accent-soft);
+  padding: 7px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+/* CARDS */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.metric-value {
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 7px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 1.25fr .75fr;
+  gap: 18px;
+}
+
+.section-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-title h3 {
+  font-size: 16px;
+  margin: 0;
+}
+
+.section-title span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* ISSUES */
+
+.issue {
+  display: flex;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.issue:last-child {
+  border-bottom: 0;
+}
+
+.issue strong {
+  font-size: 13px;
+}
+
+.issue small {
+  display: block;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.count {
+  background: var(--accent-soft);
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 12px;
+  height: fit-content;
+}
+
+/* INSIGHT */
+
+.insight {
+  background: #f5f1e8;
+  border: 1px solid #e7dfcf;
+  border-radius: 15px;
+  padding: 18px;
+}
+
+.insight strong {
+  font-size: 13px;
+}
+
+.insight p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #625e56;
+}
+
+/* QUOTE */
+
+.principle {
+  margin-top: 18px;
+  padding: 22px;
+  background: var(--accent);
+  color: white;
+  border-radius: 16px;
+}
+
+.principle p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.principle strong {
+  display: block;
+  margin-bottom: 7px;
+}
+
+/* SUPPORT */
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.filter {
+  border: 1px solid var(--line);
+  background: white;
+  padding: 8px 13px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.filter.active {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.ticket {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 17px;
+  margin-bottom: 10px;
+  background: white;
+  cursor: pointer;
+}
+
+.ticket:hover {
+  box-shadow: var(--shadow);
+}
+
+.ticket-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.ticket h4 {
+  margin: 0;
+  font-size: 14px;
+}
+
+.ticket p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: #f1efeb;
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.tag.high {
+  background: var(--danger);
+}
+
+.tag.medium {
+  background: var(--warning);
+}
+
+/* AI */
+
+textarea {
+  width: 100%;
+  min-height: 130px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+  resize: vertical;
+  outline: none;
+}
+
+textarea:focus {
+  border-color: var(--accent);
+}
+
+.primary {
+  margin-top: 10px;
+  border: 0;
+  background: var(--accent);
+  color: white;
+  padding: 10px 16px;
+  border-radius: 9px;
+}
+
+.ai-result {
+  margin-top: 18px;
+  display: none;
+}
+
+.result-row {
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.result-row strong {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+
+.result-row span {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+/* KNOWLEDGE */
+
+.kb-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.kb-card {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.kb-card h4 {
+  margin: 0 0 7px;
+  font-size: 14px;
+}
+
+.kb-card p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.kb-card button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--accent);
+  font-size: 12px;
+}
+
+/* MODAL */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(20,20,18,.35);
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-box {
+  background: white;
+  width: min(520px, 100%);
+  border-radius: 18px;
+  padding: 25px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.15);
+}
+
+.modal-box h3 {
+  margin-top: 0;
+}
+
+.close {
+  float: right;
+  border: 0;
+  background: #f2f0eb;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+}
+
+/* MOBILE */
+
+@media (max-width: 900px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    bottom: auto;
+    position: relative;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 15px;
+  }
+
+  .app {
+    display: block;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+    padding: 25px 18px;
+  }
+
+  .nav {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  .nav button {
+    white-space: nowrap;
+  }
+
+  .grid,
+  .layout,
+  .kb-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-header {
+    display: block;
+  }
+
+  .badge {
+    display: inline-block;
+    margin-top: 12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<aside class="sidebar">
+
+<div class="brand">
+<h1>CareFlow</h1>
+<p>Customer operations workspace</p>
+</div>
+
+<nav class="nav">
+<button class="active" onclick="showPage('dashboard', this)">🏠 Dashboard</button>
+<button onclick="showPage('support', this)">🎧 Support Queue</button>
+<button onclick="showPage('ai', this)">🤖 AI Assistant</button>
+<button onclick="showPage('knowledge', this)">📚 Knowledge Base</button>
+</nav>
+
+</aside>
+
+<main class="main">
+
+<!-- DASHBOARD -->
+
+<section id="dashboard" class="page active">
+
+<div class="page-header">
+<div>
+<h2>Good morning 👋</h2>
+<p>A quick look at what's happening across customer support.</p>
+</div>
+
+<div class="badge">Interview Portfolio Prototype</div>
+</div>
+
+<div class="grid">
+
+<div class="card">
+<div class="metric-label">Open Cases</div>
+<div class="metric-value">18</div>
+</div>
+
+<div class="card">
+<div class="metric-label">SLA Watch</div>
+<div class="metric-value">3</div>
+</div>
+
+<div class="card">
+<div class="metric-label">CSAT</div>
+<div class="metric-value">94%</div>
+</div>
+
+<div class="card">
+<div class="metric-label">NPS</div>
+<div class="metric-value">48</div>
+</div>
+
+</div>
+
+<div class="layout">
+
+<div class="card">
+
+<div class="section-title">
+<h3>Recurring Issues</h3>
+<span>This week</span>
+</div>
+
+<div class="issue">
+<div>
+<strong>Reward delivery delays</strong>
+<small>Repeated customer contacts</small>
+</div>
+<div class="count">8 cases</div>
+</div>
+
+<div class="issue">
+<div>
+<strong>Login / access problems</strong>
+<small>Mostly end users</small>
+</div>
+<div class="count">5 cases</div>
+</div>
+
+<div class="issue">
+<div>
+<strong>Account verification</strong>
+<small>Support clarification needed</small>
+</div>
+<div class="count">3 cases</div>
+</div>
+
+</div>
+
+<div>
+
+<div class="insight">
+<strong>🔎 Support Insight</strong>
+<p>
+Reward delivery delays are appearing repeatedly.
+Consider reviewing the fulfillment workflow and escalating recurring technical issues to Development.
+</p>
+</div>
+
+<div class="principle">
+<strong>My approach</strong>
+<p>
+AI handles repetitive work. Humans handle exceptions, empathy, and judgment.
+</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- SUPPORT -->
+
+<section id="support" class="page">
+
+<div class="page-header">
+<div>
+<h2>Support Queue</h2>
+<p>One place to see customer issues, SLA risk, and escalations.</p>
+</div>
+</div>
+
+<div class="filters">
+
+<button class="filter active" onclick="filterTickets('all', this)">All</button>
+<button class="filter" onclick="filterTickets('b2b', this)">B2B</button>
+<button class="filter" onclick="filterTickets('b2c', this)">End User</button>
+<button class="filter" onclick="filterTickets('open', this)">Open</button>
+<button class="filter" onclick="filterTickets('escalated', this)">Escalated</button>
+
+</div>
+
+<div id="tickets">
+
+<div class="ticket" data-type="b2c open" onclick="openTicket('CASE-1042')">
+<div class="ticket-top">
+<div>
+<h4>CASE-1042 · Maria Santos</h4>
+<p>Reward has not been received</p>
+</div>
+</div>
+
+<div class="tags">
+<span class="tag">End User</span>
+<span class="tag high">High</span>
+<span class="tag">2h SLA remaining</span>
+<span class="tag">Open</span>
+</div>
+</div>
+
+<div class="ticket" data-type="b2b open" onclick="openTicket('CASE-1041')">
+<div class="ticket-top">
+<div>
+<h4>CASE-1041 · Acme Rewards</h4>
+<p>Dashboard reporting discrepancy</p>
+</div>
+</div>
+
+<div class="tags">
+<span class="tag">B2B Client</span>
+<span class="tag medium">Medium</span>
+<span class="tag">6h SLA remaining</span>
+<span class="tag">Investigating</span>
+</div>
+</div>
+
+<div class="ticket" data-type="b2c escalated" onclick="openTicket('CASE-1040')">
+<div class="ticket-top">
+<div>
+<h4>CASE-1040 · James Lee</h4>
+<p>Unable to access account</p>
+</div>
+</div>
+
+<div class="tags">
+<span class="tag">End User</span>
+<span class="tag medium">Medium</span>
+<span class="tag">4h SLA remaining</span>
+<span class="tag">Escalated</span>
+</div>
+</div>
+
+</div>
+
+</section>
+
+<!-- AI -->
+
+<section id="ai" class="page">
+
+<div class="page-header">
+<div>
+<h2>AI Support Assistant</h2>
+<p>Organize the issue first. Keep a human in the loop before responding.</p>
+</div>
+</div>
+
+<div class="card">
+
+<textarea id="issueInput" placeholder="Describe the customer's issue..."></textarea>
+
+<button class="primary" onclick="analyzeIssue()">Analyze Issue</button>
+
+<div class="ai-result" id="aiResult">
+
+<div class="result-row">
+<strong>Issue type</strong>
+<span id="issueType"></span>
+</div>
+
+<div class="result-row">
+<strong>Priority</strong>
+<span id="priority"></span>
+</div>
+
+<div class="result-row">
+<strong>Suggested next action</strong>
+<span id="nextAction"></span>
+</div>
+
+<div class="result-row">
+<strong>Suggested customer response</strong>
+<span id="response"></span>
+</div>
+
+<div class="result-row">
+<strong>Escalation</strong>
+<span id="escalation"></span>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- KNOWLEDGE -->
+
+<section id="knowledge" class="page">
+
+<div class="page-header">
+<div>
+<h2>Knowledge Base</h2>
+<p>Simple SOPs that keep customer support consistent and scalable.</p>
+</div>
+</div>
+
+<div class="kb-grid">
+
+<div class="kb-card">
+<h4>🎁 Reward Delivery</h4>
+<p>Steps for investigating delayed or missing rewards.</p>
+<button onclick="showSOP('Reward Delivery')">View SOP →</button>
+</div>
+
+<div class="kb-card">
+<h4>🔐 Account Access</h4>
+<p>Basic workflow for login and access issues.</p>
+<button onclick="showSOP('Account Access')">View SOP →</button>
+</div>
+
+<div class="kb-card">
+<h4>🚨 Escalation Process</h4>
+<p>When and how to escalate technical customer issues.</p>
+<button onclick="showSOP('Escalation Process')">View SOP →</button>
+</div>
+
+<div class="kb-card">
+<h4>📈 Customer Feedback Review</h4>
+<p>Using CSAT and NPS feedback to identify opportunities.</p>
+<button onclick="showSOP('Customer Feedback Review')">View SOP →</button>
+</div>
+
+</div>
+
+</section>
+
+</main>
+</div>
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeModal()">×</button>
+
+<h3 id="modalTitle"></h3>
+
+<div id="modalContent"></div>
+
+</div>
+
+</div>
+
+<script>
+
+function showPage(pageId, button) {
+
+document.querySelectorAll('.page').forEach(page => {
+page.classList.remove('active');
+});
+
+document.getElementById(pageId).classList.add('active');
+
+document.querySelectorAll('.nav button').forEach(btn => {
+btn.classList.remove('active');
+});
+
+button.classList.add('active');
+
+}
+
+function filterTickets(type, button) {
+
+document.querySelectorAll('.filter').forEach(btn => {
+btn.classList.remove('active');
+});
+
+button.classList.add('active');
+
+document.querySelectorAll('.ticket').forEach(ticket => {
+
+if (type === 'all') {
+ticket.style.display = 'block';
+return;
+}
+
+ticket.style.display =
+ticket.dataset.type.includes(type)
+? 'block'
+: 'none';
+
+});
+
+}
+
+function openTicket(id) {
+
+let content = '';
+
+if (id === 'CASE-1042') {
+
+content = `
+<p><strong>Customer:</strong> Maria Santos</p>
+<p><strong>Type:</strong> End User</p>
+<p><strong>Issue:</strong> Reward has not been received.</p>
+<p><strong>Priority:</strong> High</p>
+<p><strong>Recommended action:</strong> Verify fulfillment status and confirm the customer's account details.</p>
+<p><strong>Escalation:</strong> Escalate if the fulfillment system shows a technical failure.</p>
+`;
+
+}
+
+if (id === 'CASE-1041') {
+
+content = `
+<p><strong>Customer:</strong> Acme Rewards</p>
+<p><strong>Type:</strong> B2B Client</p>
+<p><strong>Issue:</strong> Dashboard reporting discrepancy.</p>
+<p><strong>Priority:</strong> Medium</p>
+<p><strong>Recommended action:</strong> Validate the reporting data and document the discrepancy for Development.</p>
+`;
+
+}
+
+if (id === 'CASE-1040') {
+
+content = `
+<p><strong>Customer:</strong> James Lee</p>
+<p><strong>Type:</strong> End User</p>
+<p><strong>Issue:</strong> Unable to access account.</p>
+<p><strong>Priority:</strong> Medium</p>
+<p><strong>Recommended action:</strong> Confirm troubleshooting steps and escalate with relevant technical details.</p>
+`;
+
+}
+
+showModal(id, content);
+
+}
+
+function analyzeIssue() {
+
+const text = document.getElementById('issueInput').value.toLowerCase();
+
+if (!text.trim()) {
+
+alert('Please describe the customer issue first.');
+
+return;
+
+}
+
+let type = 'General Support';
+let priority = 'Medium';
+let action = 'Review the customer's details and identify the appropriate next step.';
+let response = 'Thank you for reaching out. I understand your concern. I’ll review this and make sure we identify the right next step for you.';
+let escalation = 'Not required initially.';
+
+if (
+text.includes('reward') ||
+text.includes('delivery') ||
+text.includes('received')
+) {
+
+type = 'Reward Delivery';
+
+action = 'Check reward fulfillment status and verify the customer account details.';
+
+response = 'Thanks for reaching out. I understand you’re waiting for your reward. I’ll check the fulfillment status and make sure everything is in order. We’ll update you as soon as we have more information.';
+
+}
+
+if (
+text.includes('error') ||
+text.includes('bug') ||
+text.includes('technical') ||
+text.includes('not working')
+) {
+
+priority = 'High';
+
+action = 'Gather reproduction steps and relevant customer details, then escalate to Development.';
+
+escalation = 'Recommended — technical escalation.';
+
+}
+
+document.getElementById('issueType').textContent = type;
+document.getElementById('priority').textContent = priority;
+document.getElementById('nextAction').textContent = action;
+document.getElementById('response').textContent = response;
+document.getElementById('escalation').textContent = escalation;
+
+document.getElementById('aiResult').style.display = 'block';
+
+}
+
+function showSOP(title) {
+
+let content = '';
+
+if (title === 'Reward Delivery') {
+
+content = `
+<ol>
+<li>Verify customer details.</li>
+<li>Check fulfillment status.</li>
+<li>Confirm expected delivery timeframe.</li>
+<li>Communicate the next step clearly.</li>
+<li>Escalate if technical or outside SLA.</li>
+<li>Record the outcome.</li>
+</ol>
+`;
+
+}
+
+if (title === 'Account Access') {
+
+content = `
+<ol>
+<li>Verify customer identity.</li>
+<li>Confirm the reported access issue.</li>
+<li>Guide the customer through standard troubleshooting.</li>
+<li>Escalate technical issues when required.</li>
+<li>Document the resolution.</li>
+</ol>
+`;
+
+}
+
+if (title === 'Escalation Process') {
+
+content = `
+<ol>
+<li>Identify the issue.</li>
+<li>Complete standard troubleshooting.</li>
+<li>Gather relevant customer and technical information.</li>
+<li>Escalate to the appropriate team.</li>
+<li>Track ownership and SLA.</li>
+<li>Follow up with the customer.</li>
+</ol>
+`;
+
+}
+
+if (title === 'Customer Feedback Review') {
+
+content = `
+<ol>
+<li>Review CSAT and NPS feedback.</li>
+<li>Identify recurring themes.</li>
+<li>Separate individual issues from systemic issues.</li>
+<li>Identify possible process improvements.</li>
+<li>Track changes and monitor future feedback.</li>
+</ol>
+`;
+
+}
+
+showModal(title, content);
+
+}
+
+function showModal(title, content) {
+
+document.getElementById('modalTitle').textContent = title;
+
+document.getElementById('modalContent').innerHTML = content;
+
+document.getElementById('modal').style.display = 'flex';
+
+}
+
+function closeModal() {
+
+document.getElementById('modal').style.display = 'none';
+
+}
+
+</script>
+
+</body>
+</html>
