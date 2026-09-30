@@ -10,7 +10,9 @@
 
 <style>
 :root {
-  /* DESIGN TOKENS */
+  /* =======================================================
+     DESIGN TOKENS
+     ======================================================= */
   --bg: #F5F4EF;
   --card: #FFFFFF;
   --text: #292824;
@@ -22,6 +24,7 @@
   --primary-soft: #E8EEE9;
 
   --warning: #D98E04;
+  --warning-dark: #855B00;
   --warning-soft: #F8EACD;
 
   --danger: #B84A4A;
@@ -32,6 +35,9 @@
 
   --insight-bg: #F5F1E8;
   --insight-border: #E7DFCF;
+
+  --surface-soft: #FAF9F6;
+  --surface-hover: #FBFAF7;
 
   --shadow: 0 8px 30px rgba(40,38,32,.06);
   --shadow-hover: 0 12px 34px rgba(40,38,32,.10);
@@ -52,7 +58,8 @@ body {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--text);
-  font-size: 17px;
+  font-size: 16px;
+  line-height: 1.45;
 }
 
 button,
@@ -67,10 +74,15 @@ button {
 
 button:focus-visible,
 input:focus-visible,
-textarea:focus-visible {
-  outline: 3px solid rgba(111,128,116,.35);
+textarea:focus-visible,
+[tabindex="0"]:focus-visible {
+  outline: 3px solid rgba(111,128,116,.38);
   outline-offset: 2px;
 }
+
+/* =========================================================
+   APP
+   ========================================================= */
 
 .app {
   display: flex;
@@ -115,6 +127,11 @@ textarea:focus-visible {
   place-items: center;
 }
 
+.brand-mark svg {
+  width: 19px;
+  height: 19px;
+}
+
 .brand h1 {
   font-size: 23px;
   margin: 0;
@@ -123,7 +140,7 @@ textarea:focus-visible {
 
 .brand p {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13px;
   margin: 5px 0 0;
 }
 
@@ -140,7 +157,7 @@ textarea:focus-visible {
   border-radius: 10px;
   margin-bottom: 5px;
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
 
   display: flex;
   align-items: center;
@@ -161,6 +178,7 @@ textarea:focus-visible {
 .nav button.active {
   background: var(--primary);
   color: white;
+  box-shadow: 0 4px 12px rgba(82,101,90,.16);
 }
 
 .nav-icon {
@@ -200,6 +218,7 @@ textarea:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background .18s ease, color .18s ease;
 }
 
 .sidebar-toggle:hover {
@@ -301,6 +320,10 @@ textarea:focus-visible {
     box-shadow .18s ease;
 }
 
+.search-command:hover {
+  border-color: #D0CCC2;
+}
+
 .search-command:focus-within {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px rgba(111,128,116,.12);
@@ -337,6 +360,7 @@ textarea:focus-visible {
 
   color: var(--muted);
   position: relative;
+  transition: background .18s ease, color .18s ease;
 }
 
 .icon-button:hover {
@@ -397,7 +421,7 @@ textarea:focus-visible {
 .page-header p {
   margin: 7px 0 0;
   color: var(--muted);
-  font-size: 16px;
+  font-size: 15px;
 }
 
 .badge {
@@ -405,7 +429,7 @@ textarea:focus-visible {
   color: var(--primary-dark);
   padding: 7px 11px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* =========================================================
@@ -446,6 +470,12 @@ textarea:focus-visible {
 
 .kpi-card {
   min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card[role="button"] {
+  cursor: pointer;
 }
 
 .kpi-top {
@@ -456,12 +486,12 @@ textarea:focus-visible {
 
 .metric-label {
   color: var(--muted);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 650;
 }
 
 .metric-value {
-  font-size: 34px;
+  font-size: 35px;
   line-height: 1;
   font-weight: 650;
   margin-top: 9px;
@@ -498,7 +528,7 @@ textarea:focus-visible {
 }
 
 .delta-warning {
-  color: var(--warning);
+  color: var(--warning-dark);
 }
 
 .delta-negative {
@@ -515,6 +545,7 @@ textarea:focus-visible {
   width: 100%;
   height: 40px;
   margin-top: 12px;
+  display: block;
 }
 
 .sparkline polyline {
@@ -556,6 +587,7 @@ textarea:focus-visible {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
+  gap: 15px;
 }
 
 .section-title h3 {
@@ -565,7 +597,7 @@ textarea:focus-visible {
 
 .section-title span {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 /* =========================================================
@@ -584,7 +616,9 @@ textarea:focus-visible {
   gap: 12px;
   padding: 14px 0;
   border-bottom: 1px solid var(--line);
-  transition: background .15s ease;
+  transition:
+    background .15s ease,
+    transform .15s ease;
 }
 
 .attention-row:last-child {
@@ -592,12 +626,13 @@ textarea:focus-visible {
 }
 
 .attention-row:hover {
-  background: #FBFAF7;
+  background: var(--surface-hover);
 }
 
 .case-id {
   font-size: 12px;
   font-weight: 700;
+  color: var(--primary-dark);
 }
 
 .case-customer {
@@ -621,13 +656,13 @@ textarea:focus-visible {
 
 .priority.medium {
   background: var(--warning-soft);
-  color: #855B00;
+  color: var(--warning-dark);
 }
 
 .sla-countdown {
   font-size: 11px;
   font-weight: 700;
-  color: var(--warning);
+  color: var(--warning-dark);
   white-space: nowrap;
 }
 
@@ -646,10 +681,12 @@ textarea:focus-visible {
   font-size: 11px;
   font-weight: 650;
   white-space: nowrap;
+  transition: background .18s ease, transform .18s ease;
 }
 
 .primary-small:hover {
   background: var(--primary-dark);
+  transform: translateY(-1px);
 }
 
 /* =========================================================
@@ -664,7 +701,9 @@ textarea:focus-visible {
   padding: 14px 0;
   border-bottom: 1px solid var(--line);
   cursor: pointer;
-  transition: background .15s ease;
+  transition:
+    background .15s ease,
+    padding .15s ease;
 }
 
 .issue:last-child {
@@ -672,18 +711,18 @@ textarea:focus-visible {
 }
 
 .issue:hover {
-  background: #FBFAF7;
+  background: var(--surface-hover);
 }
 
 .issue strong {
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .issue small {
   display: block;
   color: var(--muted);
   margin-top: 4px;
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .issue-bar-wrap {
@@ -697,6 +736,7 @@ textarea:focus-visible {
   height: 100%;
   background: var(--primary);
   border-radius: 10px;
+  transition: width .3s ease;
 }
 
 .issue-trend {
@@ -730,6 +770,19 @@ textarea:focus-visible {
   border: 1px solid var(--insight-border);
   border-radius: 15px;
   padding: 18px;
+  height: 100%;
+}
+
+.insight-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.insight-heading svg {
+  width: 17px;
+  height: 17px;
+  color: var(--primary-dark);
 }
 
 .insight strong {
@@ -737,7 +790,7 @@ textarea:focus-visible {
 }
 
 .insight p {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--muted);
   margin: 9px 0 16px;
@@ -756,10 +809,12 @@ textarea:focus-visible {
   padding: 8px 11px;
   border-radius: 8px;
   font-size: 11px;
+  transition: background .18s ease, border-color .18s ease;
 }
 
 .secondary-button:hover {
   background: var(--primary-soft);
+  border-color: #CCD4CE;
 }
 
 /* =========================================================
@@ -773,10 +828,16 @@ textarea:focus-visible {
 }
 
 .workload-stat {
-  background: #FAF9F6;
+  background: var(--surface-soft);
   border: 1px solid var(--line);
   border-radius: 11px;
   padding: 14px;
+  transition: border-color .18s ease, transform .18s ease;
+}
+
+.workload-stat:hover {
+  border-color: #D5D1C8;
+  transform: translateY(-1px);
 }
 
 .workload-stat strong {
@@ -814,9 +875,11 @@ textarea:focus-visible {
 .filter {
   border: 1px solid var(--line);
   background: white;
+  color: var(--text);
   padding: 8px 13px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 13px;
+  transition: background .18s ease, color .18s ease, border-color .18s ease;
 }
 
 .filter:hover {
@@ -824,9 +887,9 @@ textarea:focus-visible {
 }
 
 .filter.active {
-  background: var(--accent);
+  background: var(--primary);
   color: white;
-  border-color: var(--accent);
+  border-color: var(--primary);
 }
 
 .ticket {
@@ -847,6 +910,11 @@ textarea:focus-visible {
   box-shadow: var(--shadow-hover);
   transform: translateY(-1px);
   border-color: #D8D4CB;
+}
+
+.ticket:focus-visible {
+  outline: 3px solid rgba(111,128,116,.35);
+  outline-offset: 2px;
 }
 
 .ticket-top {
@@ -877,7 +945,7 @@ textarea:focus-visible {
   background: #F1EFEB;
   padding: 5px 8px;
   border-radius: 7px;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 .tag.high {
@@ -887,7 +955,7 @@ textarea:focus-visible {
 
 .tag.medium {
   background: var(--warning-soft);
-  color: #855B00;
+  color: var(--warning-dark);
 }
 
 /* =========================================================
@@ -902,25 +970,28 @@ textarea {
   padding: 14px;
   resize: vertical;
   outline: none;
-  font-size: 16px;
+  font-size: 15px;
   background: white;
+  color: var(--text);
 }
 
 textarea:focus {
-  border-color: var(--accent);
+  border-color: var(--primary);
 }
 
 .primary {
   margin-top: 10px;
   border: 0;
-  background: var(--accent);
+  background: var(--primary);
   color: white;
   padding: 10px 16px;
   border-radius: 9px;
+  transition: background .18s ease, transform .18s ease;
 }
 
 .primary:hover {
   background: var(--primary-dark);
+  transform: translateY(-1px);
 }
 
 .ai-result {
@@ -940,7 +1011,7 @@ textarea:focus {
 }
 
 .result-row span {
-  font-size: 15px;
+  font-size: 14px;
   color: var(--muted);
   line-height: 1.5;
 }
@@ -963,12 +1034,14 @@ textarea:focus {
 
   transition:
     box-shadow .18s ease,
-    transform .18s ease;
+    transform .18s ease,
+    border-color .18s ease;
 }
 
 .kb-card:hover {
   box-shadow: var(--shadow-hover);
   transform: translateY(-1px);
+  border-color: #D8D4CB;
 }
 
 .kb-card h4 {
@@ -986,8 +1059,13 @@ textarea:focus {
   border: 0;
   background: transparent;
   padding: 0;
-  color: var(--accent);
+  color: var(--primary-dark);
   font-size: 14px;
+  font-weight: 650;
+}
+
+.kb-card button:hover {
+  text-decoration: underline;
 }
 
 /* =========================================================
@@ -1004,6 +1082,11 @@ textarea:focus {
 
   color: var(--muted);
   font-size: 11px;
+}
+
+.portfolio-tag {
+  color: var(--primary-dark);
+  font-weight: 650;
 }
 
 /* =========================================================
@@ -1033,12 +1116,21 @@ textarea:focus {
 
 .modal-box h3 {
   margin-top: 0;
+  padding-right: 35px;
+}
+
+.modal-box p,
+.modal-box li {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
 }
 
 .close {
   float: right;
   border: 0;
   background: #F2F0EB;
+  color: var(--text);
   border-radius: 50%;
   width: 30px;
   height: 30px;
@@ -1050,10 +1142,14 @@ textarea:focus {
 }
 
 /* =========================================================
-   MOBILE
+   RESPONSIVE
    ========================================================= */
 
-@media (max-width: 1150px) {
+@media (max-width: 1200px) {
+
+  .main {
+    padding: 32px 28px;
+  }
 
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1125,6 +1221,7 @@ textarea:focus {
   .nav {
     display: flex;
     overflow-x: auto;
+    scrollbar-width: thin;
   }
 
   .nav button {
@@ -1209,6 +1306,34 @@ textarea:focus {
     margin-bottom: 5px;
   }
 }
+
+@media (max-width: 430px) {
+
+  .main,
+  .sidebar.collapsed ~ .main {
+    padding: 22px 14px;
+  }
+
+  .card {
+    padding: 17px;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .command-key {
+    display: none;
+  }
+
+  .greeting h2 {
+    font-size: 23px;
+  }
+
+  .metric-value {
+    font-size: 32px;
+  }
+}
 </style>
 </head>
 
@@ -1235,12 +1360,13 @@ textarea:focus {
 
   </div>
 
-  <nav class="nav">
+  <nav class="nav" aria-label="Primary navigation">
 
     <button
       type="button"
       class="active"
       onclick="showPage('dashboard', this)"
+      aria-label="Dashboard"
     >
       <i class="nav-icon" data-lucide="layout-dashboard"></i>
       <span class="nav-label">Dashboard</span>
@@ -1249,6 +1375,7 @@ textarea:focus {
     <button
       type="button"
       onclick="showPage('support', this)"
+      aria-label="Support Queue"
     >
       <i class="nav-icon" data-lucide="headphones"></i>
       <span class="nav-label">Support Queue</span>
@@ -1258,6 +1385,7 @@ textarea:focus {
     <button
       type="button"
       onclick="showPage('ai', this)"
+      aria-label="AI Assistant"
     >
       <i class="nav-icon" data-lucide="sparkles"></i>
       <span class="nav-label">AI Assistant</span>
@@ -1266,6 +1394,7 @@ textarea:focus {
     <button
       type="button"
       onclick="showPage('knowledge', this)"
+      aria-label="Knowledge Base"
     >
       <i class="nav-icon" data-lucide="book-open"></i>
       <span class="nav-label">Knowledge Base</span>
@@ -1289,11 +1418,13 @@ textarea:focus {
 
 </aside>
 
+
 <!-- =====================================================
      MAIN
      ===================================================== -->
 
 <main class="main">
+
 
 <!-- =====================================================
      DASHBOARD
@@ -1301,7 +1432,10 @@ textarea:focus {
 
 <section id="dashboard" class="page active">
 
-  <!-- PERSONALIZED HEADER -->
+
+  <!-- ===================================================
+       PERSONALIZED HEADER
+       =================================================== -->
 
   <header class="top-header">
 
@@ -1371,9 +1505,13 @@ textarea:focus {
 
   <div class="kpi-grid">
 
+
     <!-- OPEN CASES -->
 
-    <div class="card interactive-card kpi-card">
+    <div
+      class="card interactive-card kpi-card"
+      aria-label="18 open cases"
+    >
 
       <div class="kpi-top">
 
@@ -1389,7 +1527,11 @@ textarea:focus {
 
         </div>
 
-        <span class="status-dot"></span>
+        <span
+          class="status-dot"
+          aria-label="Healthy"
+          title="Healthy"
+        ></span>
 
       </div>
 
@@ -1420,6 +1562,7 @@ textarea:focus {
       onclick="goToSLAWatch()"
       role="button"
       tabindex="0"
+      aria-label="SLA Watch: 3 cases due in under 2 hours"
       onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();goToSLAWatch();}"
     >
 
@@ -1437,7 +1580,11 @@ textarea:focus {
 
         </div>
 
-        <span class="status-dot warning"></span>
+        <span
+          class="status-dot warning"
+          aria-label="Warning"
+          title="Warning"
+        ></span>
 
       </div>
 
@@ -1463,7 +1610,10 @@ textarea:focus {
 
     <!-- CSAT -->
 
-    <div class="card interactive-card kpi-card">
+    <div
+      class="card interactive-card kpi-card"
+      aria-label="94 percent customer satisfaction"
+    >
 
       <div class="kpi-top">
 
@@ -1479,7 +1629,11 @@ textarea:focus {
 
         </div>
 
-        <span class="status-dot"></span>
+        <span
+          class="status-dot"
+          aria-label="Healthy"
+          title="Healthy"
+        ></span>
 
       </div>
 
@@ -1505,7 +1659,10 @@ textarea:focus {
 
     <!-- NPS -->
 
-    <div class="card interactive-card kpi-card">
+    <div
+      class="card interactive-card kpi-card"
+      aria-label="NPS 48"
+    >
 
       <div class="kpi-top">
 
@@ -1521,7 +1678,11 @@ textarea:focus {
 
         </div>
 
-        <span class="status-dot"></span>
+        <span
+          class="status-dot"
+          aria-label="Healthy"
+          title="Healthy"
+        ></span>
 
       </div>
 
@@ -1566,6 +1727,7 @@ textarea:focus {
     </div>
 
     <div class="attention-list">
+
 
       <!-- CASE 1042 -->
 
@@ -1702,11 +1864,14 @@ textarea:focus {
       </div>
 
 
+      <!-- REWARD DELIVERY -->
+
       <div
         class="issue"
         onclick="filterIssue('Reward delivery delays')"
         tabindex="0"
         role="button"
+        aria-label="Filter Support Queue by Reward delivery delays"
         onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();filterIssue('Reward delivery delays');}"
       >
 
@@ -1722,7 +1887,7 @@ textarea:focus {
 
         </div>
 
-        <div class="issue-bar-wrap">
+        <div class="issue-bar-wrap" aria-hidden="true">
 
           <div
             class="issue-bar"
@@ -1738,11 +1903,14 @@ textarea:focus {
       </div>
 
 
+      <!-- LOGIN -->
+
       <div
         class="issue"
         onclick="filterIssue('Login / access problems')"
         tabindex="0"
         role="button"
+        aria-label="Filter Support Queue by Login and access problems"
         onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();filterIssue('Login / access problems');}"
       >
 
@@ -1758,7 +1926,7 @@ textarea:focus {
 
         </div>
 
-        <div class="issue-bar-wrap">
+        <div class="issue-bar-wrap" aria-hidden="true">
 
           <div
             class="issue-bar"
@@ -1774,11 +1942,14 @@ textarea:focus {
       </div>
 
 
+      <!-- VERIFICATION -->
+
       <div
         class="issue"
         onclick="filterIssue('Account verification')"
         tabindex="0"
         role="button"
+        aria-label="Filter Support Queue by Account verification"
         onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();filterIssue('Account verification');}"
       >
 
@@ -1794,7 +1965,7 @@ textarea:focus {
 
         </div>
 
-        <div class="issue-bar-wrap">
+        <div class="issue-bar-wrap" aria-hidden="true">
 
           <div
             class="issue-bar"
@@ -1820,9 +1991,15 @@ textarea:focus {
 
       <div class="insight">
 
-        <strong>
-          🔎 Support Insight
-        </strong>
+        <div class="insight-heading">
+
+          <i data-lucide="lightbulb"></i>
+
+          <strong>
+            Support Insight
+          </strong>
+
+        </div>
 
         <p>
           Reward delivery delays are appearing repeatedly.
@@ -1921,7 +2098,9 @@ textarea:focus {
   </div>
 
 
-  <!-- FOOTER -->
+  <!-- ===================================================
+       FOOTER
+       =================================================== -->
 
   <footer class="dashboard-footer">
 
@@ -1929,7 +2108,7 @@ textarea:focus {
       CareFlow Customer Operations Workspace
     </span>
 
-    <span>
+    <span class="portfolio-tag">
       Interview Portfolio Prototype
     </span>
 
@@ -2010,6 +2189,9 @@ textarea:focus {
       class="ticket"
       data-type="b2c open reward"
       onclick="openTicket('CASE-1042')"
+      tabindex="0"
+      role="button"
+      onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();openTicket('CASE-1042');}"
     >
 
       <div class="ticket-top">
@@ -2057,6 +2239,9 @@ textarea:focus {
       class="ticket"
       data-type="b2b open reporting"
       onclick="openTicket('CASE-1041')"
+      tabindex="0"
+      role="button"
+      onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();openTicket('CASE-1041');}"
     >
 
       <div class="ticket-top">
@@ -2104,6 +2289,9 @@ textarea:focus {
       class="ticket"
       data-type="b2c escalated access"
       onclick="openTicket('CASE-1040')"
+      tabindex="0"
+      role="button"
+      onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();openTicket('CASE-1040');}"
     >
 
       <div class="ticket-top">
@@ -2178,6 +2366,7 @@ textarea:focus {
     <textarea
       id="issueInput"
       placeholder="Describe the customer's issue..."
+      aria-label="Describe the customer's issue"
     ></textarea>
 
 
@@ -2284,7 +2473,8 @@ textarea:focus {
     <div class="kb-card">
 
       <h4>
-        🎁 Reward Delivery
+        <i data-lucide="gift" style="width:16px;height:16px;vertical-align:-3px;"></i>
+        Reward Delivery
       </h4>
 
       <p>
@@ -2301,7 +2491,8 @@ textarea:focus {
     <div class="kb-card">
 
       <h4>
-        🔐 Account Access
+        <i data-lucide="lock-keyhole" style="width:16px;height:16px;vertical-align:-3px;"></i>
+        Account Access
       </h4>
 
       <p>
@@ -2318,7 +2509,8 @@ textarea:focus {
     <div class="kb-card">
 
       <h4>
-        🚨 Escalation Process
+        <i data-lucide="triangle-alert" style="width:16px;height:16px;vertical-align:-3px;"></i>
+        Escalation Process
       </h4>
 
       <p>
@@ -2335,7 +2527,8 @@ textarea:focus {
     <div class="kb-card">
 
       <h4>
-        📈 Customer Feedback Review
+        <i data-lucide="chart-no-axes-combined" style="width:16px;height:16px;vertical-align:-3px;"></i>
+        Customer Feedback Review
       </h4>
 
       <p>
@@ -2434,6 +2627,26 @@ function toggleSidebar() {
 
   sidebar.classList.toggle('collapsed');
 
+  const toggle =
+    document.querySelector('.sidebar-toggle');
+
+  const collapsed =
+    sidebar.classList.contains('collapsed');
+
+  toggle.setAttribute(
+    'aria-label',
+    collapsed
+      ? 'Expand sidebar'
+      : 'Collapse sidebar'
+  );
+
+  toggle.setAttribute(
+    'title',
+    collapsed
+      ? 'Expand sidebar'
+      : 'Collapse sidebar'
+  );
+
 }
 
 
@@ -2461,6 +2674,11 @@ function showPage(pageId, button) {
   if (button) {
     button.classList.add('active');
   }
+
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
 
 }
 
@@ -3037,6 +3255,24 @@ document.getElementById('modal').addEventListener(
 
   }
 );
+
+
+/* =========================================================
+   ESCAPE KEY CLOSES MODAL
+   ========================================================= */
+
+document.addEventListener('keydown', function(event) {
+
+  if (
+    event.key === 'Escape' &&
+    document.getElementById('modal').style.display === 'flex'
+  ) {
+
+    closeModal();
+
+  }
+
+});
 
 </script>
 
