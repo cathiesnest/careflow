@@ -5,22 +5,46 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CareFlow — Customer Operations Workspace</title>
 
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+
 <style>
 :root {
-  --bg: #f7f5f0;
-  --card: #ffffff;
+  /* DESIGN TOKENS */
+  --bg: #F5F4EF;
+  --card: #FFFFFF;
   --text: #292824;
-  --muted: #77736b;
-  --line: #e8e4dc;
-  --accent: #6f8175;
-  --accent-soft: #e9eee9;
-  --warning: #f3ead8;
-  --danger: #f3dddd;
+  --muted: #5F5C55;
+  --line: #E4E1D9;
+
+  --primary: #6F8074;
+  --primary-dark: #52655A;
+  --primary-soft: #E8EEE9;
+
+  --warning: #D98E04;
+  --warning-soft: #F8EACD;
+
+  --danger: #B84A4A;
+  --danger-soft: #F3DEDE;
+
+  --success: #4D7A5D;
+  --success-soft: #E3EEE6;
+
+  --insight-bg: #F5F1E8;
+  --insight-border: #E7DFCF;
+
   --shadow: 0 8px 30px rgba(40,38,32,.06);
+  --shadow-hover: 0 12px 34px rgba(40,38,32,.10);
+
+  --radius: 16px;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -41,25 +65,54 @@ button {
   cursor: pointer;
 }
 
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid rgba(111,128,116,.35);
+  outline-offset: 2px;
+}
+
 .app {
   display: flex;
   min-height: 100vh;
 }
 
-/* SIDEBAR */
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
 
 .sidebar {
   width: 235px;
-  background: #fff;
+  background: var(--card);
   border-right: 1px solid var(--line);
   padding: 28px 18px;
   position: fixed;
   top: 0;
   bottom: 0;
+  z-index: 20;
+  transition: width .25s ease;
+}
+
+.sidebar.collapsed {
+  width: 78px;
 }
 
 .brand {
   padding: 0 10px 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  border-radius: 11px;
+  background: var(--primary);
+  color: white;
+  display: grid;
+  place-items: center;
 }
 
 .brand h1 {
@@ -74,6 +127,10 @@ button {
   margin: 5px 0 0;
 }
 
+.brand-copy {
+  min-width: 0;
+}
+
 .nav button {
   width: 100%;
   border: 0;
@@ -84,22 +141,245 @@ button {
   margin-bottom: 5px;
   color: var(--muted);
   font-size: 16px;
+
+  display: flex;
+  align-items: center;
+  gap: 11px;
+
+  transition:
+    background .18s ease,
+    color .18s ease,
+    transform .18s ease;
 }
 
-.nav button:hover,
+.nav button:hover {
+  background: var(--primary-soft);
+  color: var(--text);
+  transform: translateX(2px);
+}
+
 .nav button.active {
-  background: var(--accent-soft);
+  background: var(--primary);
+  color: white;
+}
+
+.nav-icon {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+}
+
+.nav-label {
+  flex: 1;
+}
+
+.nav-count {
+  min-width: 23px;
+  height: 21px;
+  padding: 0 6px;
+  border-radius: 11px;
+  background: rgba(0,0,0,.07);
+  display: inline-grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.nav button.active .nav-count {
+  background: rgba(255,255,255,.20);
+}
+
+.sidebar-toggle {
+  width: 100%;
+  margin-top: 18px;
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--muted);
+  border-radius: 10px;
+  padding: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-toggle:hover {
+  background: var(--primary-soft);
   color: var(--text);
 }
+
+.sidebar.collapsed .brand-copy,
+.sidebar.collapsed .nav-label,
+.sidebar.collapsed .nav-count {
+  display: none;
+}
+
+.sidebar.collapsed .nav button {
+  justify-content: center;
+}
+
+.sidebar-footer {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 18px;
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.sidebar.collapsed .sidebar-footer {
+  display: none;
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
 
 .main {
   margin-left: 235px;
   width: calc(100% - 235px);
   padding: 38px 42px;
-  max-width: 1400px;
+  max-width: 1500px;
+  transition:
+    margin-left .25s ease,
+    width .25s ease;
 }
 
-/* HEADER */
+.sidebar.collapsed ~ .main {
+  margin-left: 78px;
+  width: calc(100% - 78px);
+}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.greeting h2 {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: -.8px;
+}
+
+.greeting p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.search-command {
+  width: 245px;
+  height: 42px;
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 11px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  padding: 0 11px;
+  color: var(--muted);
+
+  transition:
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+.search-command:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(111,128,116,.12);
+}
+
+.search-command input {
+  border: 0;
+  outline: 0;
+  min-width: 0;
+  width: 100%;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.command-key {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 2px 5px;
+  font-size: 10px;
+  background: var(--bg);
+  white-space: nowrap;
+}
+
+.icon-button {
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 11px;
+
+  display: grid;
+  place-items: center;
+
+  color: var(--muted);
+  position: relative;
+}
+
+.icon-button:hover {
+  background: var(--primary-soft);
+  color: var(--text);
+}
+
+.notification-dot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--warning);
+  top: 7px;
+  right: 7px;
+  border: 2px solid white;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary-dark);
+
+  display: grid;
+  place-items: center;
+
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* =========================================================
+   PAGE
+   ========================================================= */
+
+.page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
 
 .page-header {
   display: flex;
@@ -121,45 +401,155 @@ button {
 }
 
 .badge {
-  background: var(--accent-soft);
+  background: var(--primary-soft);
+  color: var(--primary-dark);
   padding: 7px 11px;
   border-radius: 20px;
   font-size: 14px;
 }
 
-/* CARDS */
+/* =========================================================
+   CARDS
+   ========================================================= */
 
-.grid {
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+}
+
+.interactive-card {
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    border-color .18s ease;
+}
+
+.interactive-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-hover);
+  border-color: #D8D4CB;
+}
+
+/* =========================================================
+   KPI CARDS
+   ========================================================= */
+
+.kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   margin-bottom: 18px;
 }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: var(--shadow);
+.kpi-card {
+  min-width: 0;
+}
+
+.kpi-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .metric-label {
   color: var(--muted);
   font-size: 14px;
+  font-weight: 600;
 }
 
 .metric-value {
-  font-size: 28px;
-  font-weight: 700;
-  margin-top: 7px;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 650;
+  margin-top: 9px;
+  letter-spacing: -1px;
 }
 
-.layout {
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--success);
+  margin-top: 5px;
+}
+
+.status-dot.warning {
+  background: var(--warning);
+}
+
+.status-dot.danger {
+  background: var(--danger);
+}
+
+.metric-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.delta-positive {
+  color: var(--success);
+}
+
+.delta-warning {
+  color: var(--warning);
+}
+
+.delta-negative {
+  color: var(--danger);
+}
+
+.kpi-subtext {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 5px;
+}
+
+.sparkline {
+  width: 100%;
+  height: 40px;
+  margin-top: 12px;
+}
+
+.sparkline polyline {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sparkline.warning polyline {
+  stroke: var(--warning);
+}
+
+.sparkline.danger polyline {
+  stroke: var(--danger);
+}
+
+/* =========================================================
+   DASHBOARD LAYOUT
+   ========================================================= */
+
+.dashboard-layout {
   display: grid;
   grid-template-columns: 1.25fr .75fr;
   gap: 18px;
 }
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+/* =========================================================
+   SECTION TITLE
+   ========================================================= */
 
 .section-title {
   display: flex;
@@ -178,17 +568,111 @@ button {
   font-size: 14px;
 }
 
-/* ISSUES */
+/* =========================================================
+   NEEDS ATTENTION
+   ========================================================= */
 
-.issue {
+.attention-list {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+}
+
+.attention-row {
+  display: grid;
+  grid-template-columns: 88px 1.1fr 75px 90px 1.6fr auto;
+  align-items: center;
+  gap: 12px;
   padding: 14px 0;
   border-bottom: 1px solid var(--line);
+  transition: background .15s ease;
+}
+
+.attention-row:last-child {
+  border-bottom: 0;
+}
+
+.attention-row:hover {
+  background: #FBFAF7;
+}
+
+.case-id {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.case-customer {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.priority {
+  width: fit-content;
+  display: inline-flex;
+  padding: 5px 8px;
+  border-radius: 7px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.priority.high {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.priority.medium {
+  background: var(--warning-soft);
+  color: #855B00;
+}
+
+.sla-countdown {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--warning);
+  white-space: nowrap;
+}
+
+.ai-action {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.primary-small {
+  border: 0;
+  background: var(--primary);
+  color: white;
+  padding: 8px 11px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+.primary-small:hover {
+  background: var(--primary-dark);
+}
+
+/* =========================================================
+   ISSUES
+   ========================================================= */
+
+.issue {
+  display: grid;
+  grid-template-columns: 1.25fr 2fr auto;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+  cursor: pointer;
+  transition: background .15s ease;
 }
 
 .issue:last-child {
   border-bottom: 0;
+}
+
+.issue:hover {
+  background: #FBFAF7;
 }
 
 .issue strong {
@@ -199,22 +683,51 @@ button {
   display: block;
   color: var(--muted);
   margin-top: 4px;
-  font-size: 14px;
+  font-size: 12px;
+}
+
+.issue-bar-wrap {
+  height: 7px;
+  background: #ECEAE4;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.issue-bar {
+  height: 100%;
+  background: var(--primary);
+  border-radius: 10px;
+}
+
+.issue-trend {
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.issue-trend.up {
+  color: var(--danger);
+}
+
+.issue-trend.down {
+  color: var(--success);
 }
 
 .count {
-  background: var(--accent-soft);
+  background: var(--primary-soft);
   padding: 5px 9px;
   border-radius: 20px;
   font-size: 14px;
   height: fit-content;
 }
 
-/* INSIGHT */
+/* =========================================================
+   INSIGHT
+   ========================================================= */
 
 .insight {
-  background: #f5f1e8;
-  border: 1px solid #e7dfcf;
+  background: var(--insight-bg);
+  border: 1px solid var(--insight-border);
   border-radius: 15px;
   padding: 18px;
 }
@@ -226,39 +739,70 @@ button {
 .insight p {
   font-size: 15px;
   line-height: 1.6;
-  color: #625e56;
+  color: var(--muted);
+  margin: 9px 0 16px;
 }
 
-/* QUOTE */
-
-.principle {
-  margin-top: 18px;
-  padding: 22px;
-  background: var(--accent);
-  color: white;
-  border-radius: 16px;
+.insight-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-.principle p {
-  margin: 0;
-  font-size: 16px;
-  line-height: 1.6;
+.secondary-button {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--text);
+  padding: 8px 11px;
+  border-radius: 8px;
+  font-size: 11px;
 }
 
-.principle strong {
+.secondary-button:hover {
+  background: var(--primary-soft);
+}
+
+/* =========================================================
+   AI + HUMAN WORKLOAD
+   ========================================================= */
+
+.workload-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.workload-stat {
+  background: #FAF9F6;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  padding: 14px;
+}
+
+.workload-stat strong {
   display: block;
-  margin-bottom: 7px;
+  font-size: 25px;
+  margin-bottom: 4px;
 }
 
-/* SUPPORT */
-
-.page {
-  display: none;
+.workload-stat span {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
 }
 
-.page.active {
-  display: block;
+.workload-footer {
+  border-top: 1px solid var(--line);
+  margin-top: 14px;
+  padding-top: 12px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
 }
+
+/* =========================================================
+   SUPPORT
+   ========================================================= */
 
 .filters {
   display: flex;
@@ -275,6 +819,10 @@ button {
   font-size: 14px;
 }
 
+.filter:hover {
+  background: var(--primary-soft);
+}
+
 .filter.active {
   background: var(--accent);
   color: white;
@@ -288,10 +836,17 @@ button {
   margin-bottom: 10px;
   background: white;
   cursor: pointer;
+
+  transition:
+    box-shadow .18s ease,
+    transform .18s ease,
+    border-color .18s ease;
 }
 
 .ticket:hover {
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+  border-color: #D8D4CB;
 }
 
 .ticket-top {
@@ -319,21 +874,25 @@ button {
 }
 
 .tag {
-  background: #f1efeb;
+  background: #F1EFEB;
   padding: 5px 8px;
   border-radius: 7px;
   font-size: 13px;
 }
 
 .tag.high {
-  background: var(--danger);
+  background: var(--danger-soft);
+  color: var(--danger);
 }
 
 .tag.medium {
-  background: var(--warning);
+  background: var(--warning-soft);
+  color: #855B00;
 }
 
-/* AI */
+/* =========================================================
+   AI
+   ========================================================= */
 
 textarea {
   width: 100%;
@@ -344,6 +903,7 @@ textarea {
   resize: vertical;
   outline: none;
   font-size: 16px;
+  background: white;
 }
 
 textarea:focus {
@@ -357,6 +917,10 @@ textarea:focus {
   color: white;
   padding: 10px 16px;
   border-radius: 9px;
+}
+
+.primary:hover {
+  background: var(--primary-dark);
 }
 
 .ai-result {
@@ -381,7 +945,9 @@ textarea:focus {
   line-height: 1.5;
 }
 
-/* KNOWLEDGE */
+/* =========================================================
+   KNOWLEDGE
+   ========================================================= */
 
 .kb-grid {
   display: grid;
@@ -394,6 +960,15 @@ textarea:focus {
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 18px;
+
+  transition:
+    box-shadow .18s ease,
+    transform .18s ease;
+}
+
+.kb-card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
 }
 
 .kb-card h4 {
@@ -415,7 +990,25 @@ textarea:focus {
   font-size: 14px;
 }
 
-/* MODAL */
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.dashboard-footer {
+  margin-top: 22px;
+  padding: 14px 2px 4px;
+  border-top: 1px solid var(--line);
+
+  display: flex;
+  justify-content: space-between;
+
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
 
 .modal {
   display: none;
@@ -425,11 +1018,14 @@ textarea:focus {
   align-items: center;
   justify-content: center;
   padding: 20px;
+  z-index: 100;
 }
 
 .modal-box {
   background: white;
-  width: min(520px, 100%);
+  width: min(560px, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
   border-radius: 18px;
   padding: 25px;
   box-shadow: 0 20px 60px rgba(0,0,0,.15);
@@ -442,15 +1038,47 @@ textarea:focus {
 .close {
   float: right;
   border: 0;
-  background: #f2f0eb;
+  background: #F2F0EB;
   border-radius: 50%;
   width: 30px;
   height: 30px;
+  font-size: 18px;
 }
 
-/* MOBILE */
+.close:hover {
+  background: var(--primary-soft);
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 1150px) {
+
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .attention-row {
+    grid-template-columns: 85px 1fr 75px 90px;
+  }
+
+  .attention-row .ai-action {
+    grid-column: 2 / 4;
+  }
+
+  .attention-row .primary-small {
+    grid-column: 4;
+    grid-row: 1 / 3;
+  }
+}
 
 @media (max-width: 900px) {
+
   .sidebar {
     width: 100%;
     height: auto;
@@ -461,11 +1089,34 @@ textarea:focus {
     padding: 15px;
   }
 
+  .sidebar.collapsed {
+    width: 100%;
+  }
+
+  .sidebar.collapsed .brand-copy,
+  .sidebar.collapsed .nav-label,
+  .sidebar.collapsed .nav-count {
+    display: block;
+  }
+
+  .sidebar.collapsed .nav button {
+    justify-content: flex-start;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .sidebar-toggle {
+    display: none;
+  }
+
   .app {
     display: block;
   }
 
-  .main {
+  .main,
+  .sidebar.collapsed ~ .main {
     margin-left: 0;
     width: 100%;
     padding: 25px 18px;
@@ -478,12 +1129,43 @@ textarea:focus {
 
   .nav button {
     white-space: nowrap;
+    width: auto;
   }
 
-  .grid,
-  .layout,
+  .top-header {
+    align-items: flex-start;
+  }
+
+  .search-command {
+    width: 200px;
+  }
+
   .kb-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 620px) {
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .top-header {
+    display: block;
+  }
+
+  .header-actions {
+    margin-top: 16px;
+  }
+
+  .search-command {
+    width: auto;
+    flex: 1;
+  }
+
+  .greeting h2 {
+    font-size: 25px;
   }
 
   .page-header {
@@ -494,6 +1176,38 @@ textarea:focus {
     display: inline-block;
     margin-top: 12px;
   }
+
+  .attention-row {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .attention-row .ai-action {
+    grid-column: 1 / -1;
+  }
+
+  .attention-row .primary-small {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .issue {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .workload-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-footer {
+    display: block;
+  }
+
+  .dashboard-footer span {
+    display: block;
+    margin-bottom: 5px;
+  }
 }
 </style>
 </head>
@@ -502,568 +1216,1827 @@ textarea:focus {
 
 <div class="app">
 
-<aside class="sidebar">
+<!-- =====================================================
+     SIDEBAR
+     ===================================================== -->
 
-<div class="brand">
-<h1>CareFlow</h1>
-<p>Customer operations workspace</p>
-</div>
+<aside class="sidebar" id="sidebar">
 
-<nav class="nav">
-<button class="active" onclick="showPage('dashboard', this)">🏠 Dashboard</button>
-<button onclick="showPage('support', this)">🎧 Support Queue</button>
-<button onclick="showPage('ai', this)">🤖 AI Assistant</button>
-<button onclick="showPage('knowledge', this)">📚 Knowledge Base</button>
-</nav>
+  <div class="brand">
+
+    <div class="brand-mark">
+      <i data-lucide="waves"></i>
+    </div>
+
+    <div class="brand-copy">
+      <h1>CareFlow</h1>
+      <p>Customer operations workspace</p>
+    </div>
+
+  </div>
+
+  <nav class="nav">
+
+    <button
+      type="button"
+      class="active"
+      onclick="showPage('dashboard', this)"
+    >
+      <i class="nav-icon" data-lucide="layout-dashboard"></i>
+      <span class="nav-label">Dashboard</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="showPage('support', this)"
+    >
+      <i class="nav-icon" data-lucide="headphones"></i>
+      <span class="nav-label">Support Queue</span>
+      <span class="nav-count">18</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="showPage('ai', this)"
+    >
+      <i class="nav-icon" data-lucide="sparkles"></i>
+      <span class="nav-label">AI Assistant</span>
+    </button>
+
+    <button
+      type="button"
+      onclick="showPage('knowledge', this)"
+    >
+      <i class="nav-icon" data-lucide="book-open"></i>
+      <span class="nav-label">Knowledge Base</span>
+    </button>
+
+  </nav>
+
+  <button
+    class="sidebar-toggle"
+    type="button"
+    onclick="toggleSidebar()"
+    aria-label="Collapse sidebar"
+    title="Collapse sidebar"
+  >
+    <i data-lucide="panel-left-close"></i>
+  </button>
+
+  <div class="sidebar-footer">
+    Customer operations • AI-assisted
+  </div>
 
 </aside>
 
+<!-- =====================================================
+     MAIN
+     ===================================================== -->
+
 <main class="main">
 
-<!-- DASHBOARD -->
+<!-- =====================================================
+     DASHBOARD
+     ===================================================== -->
 
 <section id="dashboard" class="page active">
 
-<div class="page-header">
+  <!-- PERSONALIZED HEADER -->
 
-<div>
-<h2>Good morning 👋</h2>
-<p>A quick look at what's happening across customer support.</p>
-</div>
+  <header class="top-header">
 
-<div class="badge">Interview Portfolio Prototype</div>
+    <div class="greeting">
 
-</div>
+      <h2>Good morning, Catherine 👋</h2>
 
-<div class="grid">
+      <p id="currentDate">
+        Loading today's date...
+      </p>
 
-<div class="card">
-<div class="metric-label">Open Cases</div>
-<div class="metric-value">18</div>
-</div>
+    </div>
 
-<div class="card">
-<div class="metric-label">SLA Watch</div>
-<div class="metric-value">3</div>
-</div>
+    <div class="header-actions">
 
-<div class="card">
-<div class="metric-label">CSAT</div>
-<div class="metric-value">94%</div>
-</div>
+      <label class="search-command">
 
-<div class="card">
-<div class="metric-label">NPS</div>
-<div class="metric-value">48</div>
-</div>
+        <i
+          data-lucide="search"
+          style="width:16px;height:16px;"
+        ></i>
 
-</div>
+        <input
+          id="globalSearch"
+          type="search"
+          placeholder="Search or jump to..."
+          aria-label="Search or jump to a section"
+          onkeydown="handleGlobalSearch(event)"
+        >
 
-<div class="layout">
+        <span class="command-key">
+          ⌘K
+        </span>
 
-<div class="card">
+      </label>
 
-<div class="section-title">
-<h3>Recurring Issues</h3>
-<span>This week</span>
-</div>
+      <button
+        class="icon-button"
+        type="button"
+        onclick="showNotifications()"
+        aria-label="View notifications"
+        title="Notifications"
+      >
 
-<div class="issue">
-<div>
-<strong>Reward delivery delays</strong>
-<small>Repeated customer contacts</small>
-</div>
-<div class="count">8 cases</div>
-</div>
+        <i data-lucide="bell"></i>
 
-<div class="issue">
-<div>
-<strong>Login / access problems</strong>
-<small>Mostly end users</small>
-</div>
-<div class="count">5 cases</div>
-</div>
+        <span class="notification-dot"></span>
 
-<div class="issue">
-<div>
-<strong>Account verification</strong>
-<small>Support clarification needed</small>
-</div>
-<div class="count">3 cases</div>
-</div>
+      </button>
 
-</div>
+      <div
+        class="avatar"
+        title="Catherine Garcia"
+        aria-label="Catherine Garcia"
+      >
+        CG
+      </div>
 
-<div>
+    </div>
 
-<div class="insight">
+  </header>
 
-<strong>🔎 Support Insight</strong>
 
-<p>
-Reward delivery delays are appearing repeatedly.
-Consider reviewing the fulfillment workflow and escalating recurring technical issues to Development.
-</p>
+  <!-- ===================================================
+       KPI CARDS
+       =================================================== -->
 
-</div>
+  <div class="kpi-grid">
 
-<div class="principle">
+    <!-- OPEN CASES -->
 
-<strong>My approach</strong>
+    <div class="card interactive-card kpi-card">
 
-<p>
-AI handles repetitive work. Humans handle exceptions, empathy, and judgment.
-</p>
+      <div class="kpi-top">
 
-</div>
+        <div>
 
-</div>
+          <div class="metric-label">
+            Open Cases
+          </div>
 
-</div>
+          <div class="metric-value">
+            18
+          </div>
+
+        </div>
+
+        <span class="status-dot"></span>
+
+      </div>
+
+      <div class="metric-delta delta-positive">
+        ↑ 12% vs previous week
+      </div>
+
+      <div class="kpi-subtext">
+        Healthy queue volume
+      </div>
+
+      <svg
+        class="sparkline"
+        viewBox="0 0 180 40"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <polyline points="0,30 25,28 50,31 75,23 100,25 125,17 150,19 180,10"/>
+      </svg>
+
+    </div>
+
+
+    <!-- SLA WATCH -->
+
+    <div
+      class="card interactive-card kpi-card"
+      onclick="goToSLAWatch()"
+      role="button"
+      tabindex="0"
+      onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();goToSLAWatch();}"
+    >
+
+      <div class="kpi-top">
+
+        <div>
+
+          <div class="metric-label">
+            SLA Watch
+          </div>
+
+          <div class="metric-value">
+            3
+          </div>
+
+        </div>
+
+        <span class="status-dot warning"></span>
+
+      </div>
+
+      <div class="metric-delta delta-warning">
+        ↑ 1 case vs previous week
+      </div>
+
+      <div class="kpi-subtext">
+        3 cases due in under 2h
+      </div>
+
+      <svg
+        class="sparkline warning"
+        viewBox="0 0 180 40"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <polyline points="0,30 25,27 50,29 75,23 100,25 125,15 150,18 180,9"/>
+      </svg>
+
+    </div>
+
+
+    <!-- CSAT -->
+
+    <div class="card interactive-card kpi-card">
+
+      <div class="kpi-top">
+
+        <div>
+
+          <div class="metric-label">
+            CSAT
+          </div>
+
+          <div class="metric-value">
+            94%
+          </div>
+
+        </div>
+
+        <span class="status-dot"></span>
+
+      </div>
+
+      <div class="metric-delta delta-positive">
+        ↑ 3.2% vs previous week
+      </div>
+
+      <div class="kpi-subtext">
+        Customer satisfaction
+      </div>
+
+      <svg
+        class="sparkline"
+        viewBox="0 0 180 40"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <polyline points="0,28 25,27 50,24 75,25 100,18 125,20 150,12 180,9"/>
+      </svg>
+
+    </div>
+
+
+    <!-- NPS -->
+
+    <div class="card interactive-card kpi-card">
+
+      <div class="kpi-top">
+
+        <div>
+
+          <div class="metric-label">
+            NPS
+          </div>
+
+          <div class="metric-value">
+            48
+          </div>
+
+        </div>
+
+        <span class="status-dot"></span>
+
+      </div>
+
+      <div class="metric-delta delta-positive">
+        ↑ 6 pts vs previous week
+      </div>
+
+      <div class="kpi-subtext">
+        Customer loyalty signal
+      </div>
+
+      <svg
+        class="sparkline"
+        viewBox="0 0 180 40"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <polyline points="0,31 25,29 50,27 75,28 100,20 125,22 150,13 180,8"/>
+      </svg>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================
+       NEEDS ATTENTION
+       =================================================== -->
+
+  <div class="card interactive-card full-width">
+
+    <div class="section-title">
+
+      <h3>
+        Needs Attention
+      </h3>
+
+      <span>
+        3 cases require action
+      </span>
+
+    </div>
+
+    <div class="attention-list">
+
+      <!-- CASE 1042 -->
+
+      <div class="attention-row">
+
+        <div class="case-id">
+          CASE-1042
+        </div>
+
+        <div class="case-customer">
+          Maria Santos
+        </div>
+
+        <span class="priority high">
+          High
+        </span>
+
+        <div class="sla-countdown">
+          1h 42m
+        </div>
+
+        <div class="ai-action">
+          AI suggests checking reward fulfillment status first.
+        </div>
+
+        <button
+          class="primary-small"
+          type="button"
+          onclick="openTicket('CASE-1042')"
+        >
+          Review case
+        </button>
+
+      </div>
+
+
+      <!-- CASE 1040 -->
+
+      <div class="attention-row">
+
+        <div class="case-id">
+          CASE-1040
+        </div>
+
+        <div class="case-customer">
+          James Lee
+        </div>
+
+        <span class="priority medium">
+          Medium
+        </span>
+
+        <div class="sla-countdown">
+          1h 58m
+        </div>
+
+        <div class="ai-action">
+          AI suggests completing troubleshooting before escalation.
+        </div>
+
+        <button
+          class="primary-small"
+          type="button"
+          onclick="openTicket('CASE-1040')"
+        >
+          Review case
+        </button>
+
+      </div>
+
+
+      <!-- CASE 1038 -->
+
+      <div class="attention-row">
+
+        <div class="case-id">
+          CASE-1038
+        </div>
+
+        <div class="case-customer">
+          Northstar Rewards
+        </div>
+
+        <span class="priority medium">
+          Medium
+        </span>
+
+        <div class="sla-countdown">
+          1h 51m
+        </div>
+
+        <div class="ai-action">
+          AI suggests validating reporting data and preparing a Dev escalation.
+        </div>
+
+        <button
+          class="primary-small"
+          type="button"
+          onclick="draftEscalation('CASE-1038')"
+        >
+          Review case
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- ===================================================
+       MAIN DASHBOARD CONTENT
+       =================================================== -->
+
+  <div class="dashboard-layout">
+
+
+    <!-- =================================================
+         RECURRING ISSUES
+         ================================================= -->
+
+    <div class="card interactive-card">
+
+      <div class="section-title">
+
+        <h3>
+          Recurring Issues
+        </h3>
+
+        <span>
+          This week
+        </span>
+
+      </div>
+
+
+      <div
+        class="issue"
+        onclick="filterIssue('Reward delivery delays')"
+        tabindex="0"
+        role="button"
+        onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();filterIssue('Reward delivery delays');}"
+      >
+
+        <div>
+
+          <strong>
+            Reward delivery delays
+          </strong>
+
+          <small>
+            8 cases · repeated customer contacts
+          </small>
+
+        </div>
+
+        <div class="issue-bar-wrap">
+
+          <div
+            class="issue-bar"
+            style="width:80%;"
+          ></div>
+
+        </div>
+
+        <div class="issue-trend up">
+          ↑ 22%
+        </div>
+
+      </div>
+
+
+      <div
+        class="issue"
+        onclick="filterIssue('Login / access problems')"
+        tabindex="0"
+        role="button"
+        onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();filterIssue('Login / access problems');}"
+      >
+
+        <div>
+
+          <strong>
+            Login / access problems
+          </strong>
+
+          <small>
+            5 cases · mostly end users
+          </small>
+
+        </div>
+
+        <div class="issue-bar-wrap">
+
+          <div
+            class="issue-bar"
+            style="width:50%;"
+          ></div>
+
+        </div>
+
+        <div class="issue-trend down">
+          ↓ 8%
+        </div>
+
+      </div>
+
+
+      <div
+        class="issue"
+        onclick="filterIssue('Account verification')"
+        tabindex="0"
+        role="button"
+        onkeydown="if(event.key==='Enter' || event.key===' '){event.preventDefault();filterIssue('Account verification');}"
+      >
+
+        <div>
+
+          <strong>
+            Account verification
+          </strong>
+
+          <small>
+            3 cases · support clarification needed
+          </small>
+
+        </div>
+
+        <div class="issue-bar-wrap">
+
+          <div
+            class="issue-bar"
+            style="width:30%;"
+          ></div>
+
+        </div>
+
+        <div class="issue-trend up">
+          ↑ 5%
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         SUPPORT INSIGHT
+         ================================================= -->
+
+    <div class="card interactive-card">
+
+      <div class="insight">
+
+        <strong>
+          🔎 Support Insight
+        </strong>
+
+        <p>
+          Reward delivery delays are appearing repeatedly.
+          Consider reviewing the fulfillment workflow and escalating recurring technical issues to Development.
+        </p>
+
+        <div class="insight-actions">
+
+          <button
+            class="primary-small"
+            type="button"
+            onclick="draftEscalation('Reward delivery delays')"
+          >
+            Draft escalation to Dev
+          </button>
+
+          <button
+            class="secondary-button"
+            type="button"
+            onclick="viewRewardCases()"
+          >
+            View 8 cases
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         AI + HUMAN WORKLOAD
+         ================================================= -->
+
+    <div class="card interactive-card full-width">
+
+      <div class="section-title">
+
+        <h3>
+          AI + Human Workload
+        </h3>
+
+        <span>
+          Live workflow snapshot
+        </span>
+
+      </div>
+
+      <div class="workload-grid">
+
+        <div class="workload-stat">
+
+          <strong>
+            72%
+          </strong>
+
+          <span>
+            Cases auto-triaged
+          </span>
+
+        </div>
+
+        <div class="workload-stat">
+
+          <strong>
+            6
+          </strong>
+
+          <span>
+            Drafts awaiting human review
+          </span>
+
+        </div>
+
+        <div class="workload-stat">
+
+          <strong>
+            4
+          </strong>
+
+          <span>
+            Cases escalated to humans
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="workload-footer">
+        AI handles repetitive work. Humans handle exceptions, empathy, and judgment.
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- FOOTER -->
+
+  <footer class="dashboard-footer">
+
+    <span>
+      CareFlow Customer Operations Workspace
+    </span>
+
+    <span>
+      Interview Portfolio Prototype
+    </span>
+
+  </footer>
 
 </section>
 
-<!-- SUPPORT -->
+
+<!-- =====================================================
+     SUPPORT QUEUE
+     ===================================================== -->
 
 <section id="support" class="page">
 
-<div class="page-header">
+  <div class="page-header">
 
-<div>
-<h2>Support Queue</h2>
-<p>One place to see customer issues, SLA risk, and escalations.</p>
-</div>
+    <div>
 
-</div>
+      <h2>
+        Support Queue
+      </h2>
 
-<div class="filters">
+      <p>
+        One place to see customer issues, SLA risk, and escalations.
+      </p>
 
-<button class="filter active" onclick="filterTickets('all', this)">All</button>
-<button class="filter" onclick="filterTickets('b2b', this)">B2B</button>
-<button class="filter" onclick="filterTickets('b2c', this)">End User</button>
-<button class="filter" onclick="filterTickets('open', this)">Open</button>
-<button class="filter" onclick="filterTickets('escalated', this)">Escalated</button>
+    </div>
 
-</div>
+  </div>
 
-<div id="tickets">
 
-<div class="ticket" data-type="b2c open" onclick="openTicket('CASE-1042')">
+  <div class="filters">
 
-<div class="ticket-top">
+    <button
+      class="filter active"
+      onclick="filterTickets('all', this)"
+    >
+      All
+    </button>
 
-<div>
-<h4>CASE-1042 · Maria Santos</h4>
-<p>Reward has not been received</p>
-</div>
+    <button
+      class="filter"
+      onclick="filterTickets('b2b', this)"
+    >
+      B2B
+    </button>
 
-</div>
+    <button
+      class="filter"
+      onclick="filterTickets('b2c', this)"
+    >
+      End User
+    </button>
 
-<div class="tags">
+    <button
+      class="filter"
+      onclick="filterTickets('open', this)"
+    >
+      Open
+    </button>
 
-<span class="tag">End User</span>
-<span class="tag high">High</span>
-<span class="tag">2h SLA remaining</span>
-<span class="tag">Open</span>
+    <button
+      class="filter"
+      onclick="filterTickets('escalated', this)"
+    >
+      Escalated
+    </button>
 
-</div>
+  </div>
 
-</div>
 
-<div class="ticket" data-type="b2b open" onclick="openTicket('CASE-1041')">
+  <div id="tickets">
 
-<div class="ticket-top">
 
-<div>
-<h4>CASE-1041 · Acme Rewards</h4>
-<p>Dashboard reporting discrepancy</p>
-</div>
+    <!-- CASE 1042 -->
 
-</div>
+    <div
+      class="ticket"
+      data-type="b2c open reward"
+      onclick="openTicket('CASE-1042')"
+    >
 
-<div class="tags">
+      <div class="ticket-top">
 
-<span class="tag">B2B Client</span>
-<span class="tag medium">Medium</span>
-<span class="tag">6h SLA remaining</span>
-<span class="tag">Investigating</span>
+        <div>
 
-</div>
+          <h4>
+            CASE-1042 · Maria Santos
+          </h4>
 
-</div>
+          <p>
+            Reward has not been received
+          </p>
 
-<div class="ticket" data-type="b2c escalated" onclick="openTicket('CASE-1040')">
+        </div>
 
-<div class="ticket-top">
+      </div>
 
-<div>
-<h4>CASE-1040 · James Lee</h4>
-<p>Unable to access account</p>
-</div>
+      <div class="tags">
 
-</div>
+        <span class="tag">
+          End User
+        </span>
 
-<div class="tags">
+        <span class="tag high">
+          High
+        </span>
 
-<span class="tag">End User</span>
-<span class="tag medium">Medium</span>
-<span class="tag">4h SLA remaining</span>
-<span class="tag">Escalated</span>
+        <span class="tag">
+          2h SLA remaining
+        </span>
 
-</div>
+        <span class="tag">
+          Open
+        </span>
 
-</div>
+      </div>
 
-</div>
+    </div>
+
+
+    <!-- CASE 1041 -->
+
+    <div
+      class="ticket"
+      data-type="b2b open reporting"
+      onclick="openTicket('CASE-1041')"
+    >
+
+      <div class="ticket-top">
+
+        <div>
+
+          <h4>
+            CASE-1041 · Acme Rewards
+          </h4>
+
+          <p>
+            Dashboard reporting discrepancy
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="tags">
+
+        <span class="tag">
+          B2B Client
+        </span>
+
+        <span class="tag medium">
+          Medium
+        </span>
+
+        <span class="tag">
+          6h SLA remaining
+        </span>
+
+        <span class="tag">
+          Investigating
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <!-- CASE 1040 -->
+
+    <div
+      class="ticket"
+      data-type="b2c escalated access"
+      onclick="openTicket('CASE-1040')"
+    >
+
+      <div class="ticket-top">
+
+        <div>
+
+          <h4>
+            CASE-1040 · James Lee
+          </h4>
+
+          <p>
+            Unable to access account
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="tags">
+
+        <span class="tag">
+          End User
+        </span>
+
+        <span class="tag medium">
+          Medium
+        </span>
+
+        <span class="tag">
+          4h SLA remaining
+        </span>
+
+        <span class="tag">
+          Escalated
+        </span>
+
+      </div>
+
+    </div>
+
+
+  </div>
 
 </section>
 
-<!-- AI -->
+
+<!-- =====================================================
+     AI ASSISTANT
+     ===================================================== -->
 
 <section id="ai" class="page">
 
-<div class="page-header">
+  <div class="page-header">
 
-<div>
-<h2>AI Support Assistant</h2>
-<p>Organize the issue first. Keep a human in the loop before responding.</p>
-</div>
+    <div>
 
-</div>
+      <h2>
+        AI Support Assistant
+      </h2>
 
-<div class="card">
+      <p>
+        Organize the issue first. Keep a human in the loop before responding.
+      </p>
 
-<textarea id="issueInput" placeholder="Describe the customer's issue..."></textarea>
+    </div>
 
-<button class="primary" onclick="analyzeIssue()">Analyze Issue</button>
+  </div>
 
-<div class="ai-result" id="aiResult">
 
-<div class="result-row">
-<strong>Issue type</strong>
-<span id="issueType"></span>
-</div>
+  <div class="card">
 
-<div class="result-row">
-<strong>Priority</strong>
-<span id="priority"></span>
-</div>
+    <textarea
+      id="issueInput"
+      placeholder="Describe the customer's issue..."
+    ></textarea>
 
-<div class="result-row">
-<strong>Suggested next action</strong>
-<span id="nextAction"></span>
-</div>
 
-<div class="result-row">
-<strong>Suggested customer response</strong>
-<span id="response"></span>
-</div>
+    <button
+      class="primary"
+      onclick="analyzeIssue()"
+    >
+      Analyze Issue
+    </button>
 
-<div class="result-row">
-<strong>Escalation</strong>
-<span id="escalation"></span>
-</div>
 
-</div>
+    <div
+      class="ai-result"
+      id="aiResult"
+    >
 
-</div>
+      <div class="result-row">
+
+        <strong>
+          Issue type
+        </strong>
+
+        <span id="issueType"></span>
+
+      </div>
+
+
+      <div class="result-row">
+
+        <strong>
+          Priority
+        </strong>
+
+        <span id="priority"></span>
+
+      </div>
+
+
+      <div class="result-row">
+
+        <strong>
+          Suggested next action
+        </strong>
+
+        <span id="nextAction"></span>
+
+      </div>
+
+
+      <div class="result-row">
+
+        <strong>
+          Suggested customer response
+        </strong>
+
+        <span id="response"></span>
+
+      </div>
+
+
+      <div class="result-row">
+
+        <strong>
+          Escalation
+        </strong>
+
+        <span id="escalation"></span>
+
+      </div>
+
+    </div>
+
+  </div>
 
 </section>
 
-<!-- KNOWLEDGE -->
+
+<!-- =====================================================
+     KNOWLEDGE BASE
+     ===================================================== -->
 
 <section id="knowledge" class="page">
 
-<div class="page-header">
+  <div class="page-header">
 
-<div>
-<h2>Knowledge Base</h2>
-<p>Simple SOPs that keep customer support consistent and scalable.</p>
-</div>
+    <div>
 
-</div>
+      <h2>
+        Knowledge Base
+      </h2>
 
-<div class="kb-grid">
+      <p>
+        Simple SOPs that keep customer support consistent and scalable.
+      </p>
 
-<div class="kb-card">
+    </div>
 
-<h4>🎁 Reward Delivery</h4>
-<p>Steps for investigating delayed or missing rewards.</p>
-<button onclick="showSOP('Reward Delivery')">View SOP →</button>
+  </div>
 
-</div>
 
-<div class="kb-card">
+  <div class="kb-grid">
 
-<h4>🔐 Account Access</h4>
-<p>Basic workflow for login and access issues.</p>
-<button onclick="showSOP('Account Access')">View SOP →</button>
 
-</div>
+    <div class="kb-card">
 
-<div class="kb-card">
+      <h4>
+        🎁 Reward Delivery
+      </h4>
 
-<h4>🚨 Escalation Process</h4>
-<p>When and how to escalate technical customer issues.</p>
-<button onclick="showSOP('Escalation Process')">View SOP →</button>
+      <p>
+        Steps for investigating delayed or missing rewards.
+      </p>
 
-</div>
+      <button onclick="showSOP('Reward Delivery')">
+        View SOP →
+      </button>
 
-<div class="kb-card">
+    </div>
 
-<h4>📈 Customer Feedback Review</h4>
-<p>Using CSAT and NPS feedback to identify opportunities.</p>
-<button onclick="showSOP('Customer Feedback Review')">View SOP →</button>
 
-</div>
+    <div class="kb-card">
 
-</div>
+      <h4>
+        🔐 Account Access
+      </h4>
+
+      <p>
+        Basic workflow for login and access issues.
+      </p>
+
+      <button onclick="showSOP('Account Access')">
+        View SOP →
+      </button>
+
+    </div>
+
+
+    <div class="kb-card">
+
+      <h4>
+        🚨 Escalation Process
+      </h4>
+
+      <p>
+        When and how to escalate technical customer issues.
+      </p>
+
+      <button onclick="showSOP('Escalation Process')">
+        View SOP →
+      </button>
+
+    </div>
+
+
+    <div class="kb-card">
+
+      <h4>
+        📈 Customer Feedback Review
+      </h4>
+
+      <p>
+        Using CSAT and NPS feedback to identify opportunities.
+      </p>
+
+      <button onclick="showSOP('Customer Feedback Review')">
+        View SOP →
+      </button>
+
+    </div>
+
+
+  </div>
 
 </section>
 
 </main>
 </div>
 
-<!-- MODAL -->
 
-<div class="modal" id="modal">
+<!-- =====================================================
+     MODAL
+     ===================================================== -->
 
-<div class="modal-box">
+<div
+  class="modal"
+  id="modal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalTitle"
+>
 
-<button class="close" onclick="closeModal()">×</button>
+  <div class="modal-box">
 
-<h3 id="modalTitle"></h3>
+    <button
+      class="close"
+      onclick="closeModal()"
+      aria-label="Close dialog"
+    >
+      ×
+    </button>
 
-<div id="modalContent"></div>
+    <h3 id="modalTitle"></h3>
+
+    <div id="modalContent"></div>
+
+  </div>
 
 </div>
 
-</div>
 
 <script>
 
-function showPage(pageId, button) {
+/* =========================================================
+   ICONS
+   ========================================================= */
 
-document.querySelectorAll('.page').forEach(page => {
-page.classList.remove('active');
-});
+if (window.lucide) {
+  lucide.createIcons();
+}
 
-document.getElementById(pageId).classList.add('active');
 
-document.querySelectorAll('.nav button').forEach(btn => {
-btn.classList.remove('active');
-});
+/* =========================================================
+   DATE
+   ========================================================= */
 
-button.classList.add('active');
+function updateDate() {
+
+  const dateElement =
+    document.getElementById('currentDate');
+
+  const today = new Date();
+
+  dateElement.textContent =
+    today.toLocaleDateString(undefined, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
 
 }
+
+updateDate();
+
+
+/* =========================================================
+   SIDEBAR COLLAPSE
+   ========================================================= */
+
+function toggleSidebar() {
+
+  const sidebar =
+    document.getElementById('sidebar');
+
+  sidebar.classList.toggle('collapsed');
+
+}
+
+
+/* =========================================================
+   PAGE NAVIGATION
+   ========================================================= */
+
+function showPage(pageId, button) {
+
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
+
+  const selectedPage =
+    document.getElementById(pageId);
+
+  if (selectedPage) {
+    selectedPage.classList.add('active');
+  }
+
+  document.querySelectorAll('.nav button').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  if (button) {
+    button.classList.add('active');
+  }
+
+}
+
+
+/* =========================================================
+   FIND NAV BUTTON
+   ========================================================= */
+
+function showPageByName(pageId) {
+
+  let targetButton = null;
+
+  document.querySelectorAll('.nav button').forEach(button => {
+
+    const label =
+      button.innerText.toLowerCase();
+
+    if (
+      pageId === 'support' &&
+      label.includes('support queue')
+    ) {
+      targetButton = button;
+    }
+
+    if (
+      pageId === 'ai' &&
+      label.includes('ai assistant')
+    ) {
+      targetButton = button;
+    }
+
+    if (
+      pageId === 'knowledge' &&
+      label.includes('knowledge base')
+    ) {
+      targetButton = button;
+    }
+
+    if (
+      pageId === 'dashboard' &&
+      label.includes('dashboard')
+    ) {
+      targetButton = button;
+    }
+
+  });
+
+  showPage(pageId, targetButton);
+
+}
+
+
+/* =========================================================
+   SLA WATCH
+   ========================================================= */
+
+function goToSLAWatch() {
+
+  showPageByName('support');
+
+  const filters =
+    document.querySelectorAll('.filter');
+
+  filters.forEach(filter => {
+
+    filter.classList.remove('active');
+
+    if (
+      filter.innerText.toLowerCase() === 'open'
+    ) {
+
+      filter.classList.add('active');
+
+    }
+
+  });
+
+  document.querySelectorAll('.ticket').forEach(ticket => {
+
+    ticket.style.display = 'block';
+
+  });
+
+}
+
+
+/* =========================================================
+   GLOBAL SEARCH / COMMAND BAR
+   ========================================================= */
+
+document.addEventListener('keydown', function(event) {
+
+  if (
+    (event.metaKey || event.ctrlKey) &&
+    event.key.toLowerCase() === 'k'
+  ) {
+
+    event.preventDefault();
+
+    const search =
+      document.getElementById('globalSearch');
+
+    if (search) {
+      search.focus();
+    }
+
+  }
+
+});
+
+
+function handleGlobalSearch(event) {
+
+  if (event.key !== 'Enter') {
+    return;
+  }
+
+  const value =
+    document.getElementById('globalSearch')
+      .value
+      .trim()
+      .toLowerCase();
+
+  if (!value) {
+    return;
+  }
+
+  if (
+    value.includes('support') ||
+    value.includes('queue') ||
+    value.includes('case')
+  ) {
+
+    showPageByName('support');
+
+  } else if (
+    value.includes('ai') ||
+    value.includes('assistant')
+  ) {
+
+    showPageByName('ai');
+
+  } else if (
+    value.includes('knowledge') ||
+    value.includes('sop')
+  ) {
+
+    showPageByName('knowledge');
+
+  } else if (
+    value.includes('dashboard')
+  ) {
+
+    showPageByName('dashboard');
+
+  }
+
+}
+
+
+/* =========================================================
+   NOTIFICATIONS
+   ========================================================= */
+
+function showNotifications() {
+
+  showModal(
+    'Notifications',
+    `
+      <p><strong>3 cases</strong> are approaching their SLA.</p>
+      <p><strong>6 AI drafts</strong> are waiting for human review.</p>
+      <p>Reward delivery delays increased this week.</p>
+    `
+  );
+
+}
+
+
+/* =========================================================
+   RECURRING ISSUE FILTER
+   ========================================================= */
+
+function filterIssue(issueName) {
+
+  showPageByName('support');
+
+  document.querySelectorAll('.filter').forEach(filter => {
+    filter.classList.remove('active');
+  });
+
+  document.querySelectorAll('.ticket').forEach(ticket => {
+
+    const ticketText =
+      ticket.innerText.toLowerCase();
+
+    const issue =
+      issueName.toLowerCase();
+
+    if (
+      issue.includes('reward') &&
+      ticketText.includes('reward')
+    ) {
+
+      ticket.style.display = 'block';
+
+    } else if (
+      issue.includes('login') &&
+      ticketText.includes('access')
+    ) {
+
+      ticket.style.display = 'block';
+
+    } else if (
+      issue.includes('verification')
+    ) {
+
+      ticket.style.display = 'block';
+
+    } else {
+
+      ticket.style.display = 'none';
+
+    }
+
+  });
+
+}
+
+
+/* =========================================================
+   VIEW REWARD CASES
+   ========================================================= */
+
+function viewRewardCases() {
+
+  filterIssue('Reward delivery delays');
+
+}
+
+
+/* =========================================================
+   SUPPORT FILTERS
+   ========================================================= */
 
 function filterTickets(type, button) {
 
-document.querySelectorAll('.filter').forEach(btn => {
-btn.classList.remove('active');
-});
+  document.querySelectorAll('.filter').forEach(btn => {
+    btn.classList.remove('active');
+  });
 
-button.classList.add('active');
+  button.classList.add('active');
 
-document.querySelectorAll('.ticket').forEach(ticket => {
+  document.querySelectorAll('.ticket').forEach(ticket => {
 
-if (type === 'all') {
-ticket.style.display = 'block';
-return;
+    if (type === 'all') {
+
+      ticket.style.display = 'block';
+
+      return;
+    }
+
+    ticket.style.display =
+      ticket.dataset.type.includes(type)
+        ? 'block'
+        : 'none';
+
+  });
+
 }
 
-ticket.style.display =
-ticket.dataset.type.includes(type)
-? 'block'
-: 'none';
 
-});
-
-}
+/* =========================================================
+   TICKET MODAL
+   ========================================================= */
 
 function openTicket(id) {
 
-let content = '';
+  let content = '';
 
-if (id === 'CASE-1042') {
+  if (id === 'CASE-1042') {
 
-content = `
-<p><strong>Customer:</strong> Maria Santos</p>
-<p><strong>Type:</strong> End User</p>
-<p><strong>Issue:</strong> Reward has not been received.</p>
-<p><strong>Priority:</strong> High</p>
-<p><strong>Recommended action:</strong> Verify fulfillment status and confirm the customer's account details.</p>
-<p><strong>Escalation:</strong> Escalate if the fulfillment system shows a technical failure.</p>
-`;
+    content = `
+      <p><strong>Customer:</strong> Maria Santos</p>
+      <p><strong>Type:</strong> End User</p>
+      <p><strong>Issue:</strong> Reward has not been received.</p>
+      <p><strong>Priority:</strong> High</p>
+      <p><strong>Recommended action:</strong> Verify fulfillment status and confirm the customer's account details.</p>
+      <p><strong>Escalation:</strong> Escalate if the fulfillment system shows a technical failure.</p>
+    `;
+
+  }
+
+  if (id === 'CASE-1041') {
+
+    content = `
+      <p><strong>Customer:</strong> Acme Rewards</p>
+      <p><strong>Type:</strong> B2B Client</p>
+      <p><strong>Issue:</strong> Dashboard reporting discrepancy.</p>
+      <p><strong>Priority:</strong> Medium</p>
+      <p><strong>Recommended action:</strong> Validate the reporting data and document the discrepancy for Development.</p>
+    `;
+
+  }
+
+  if (id === 'CASE-1040') {
+
+    content = `
+      <p><strong>Customer:</strong> James Lee</p>
+      <p><strong>Type:</strong> End User</p>
+      <p><strong>Issue:</strong> Unable to access account.</p>
+      <p><strong>Priority:</strong> Medium</p>
+      <p><strong>Recommended action:</strong> Confirm troubleshooting steps and escalate with relevant technical details.</p>
+    `;
+
+  }
+
+  showModal(id, content);
 
 }
 
-if (id === 'CASE-1041') {
 
-content = `
-<p><strong>Customer:</strong> Acme Rewards</p>
-<p><strong>Type:</strong> B2B Client</p>
-<p><strong>Issue:</strong> Dashboard reporting discrepancy.</p>
-<p><strong>Priority:</strong> Medium</p>
-<p><strong>Recommended action:</strong> Validate the reporting data and document the discrepancy for Development.</p>
-`;
+/* =========================================================
+   AI ESCALATION DRAFT
+   ========================================================= */
+
+function draftEscalation(context) {
+
+  const content = `
+    <p><strong>Draft for human review</strong></p>
+
+    <p>
+      <strong>Subject:</strong>
+      Recurring customer issue requiring technical review
+    </p>
+
+    <p>
+      We are seeing repeated customer contacts related to
+      <strong>${context}</strong>.
+      The pattern suggests the issue may require review of the
+      underlying workflow or technical process.
+    </p>
+
+    <p>
+      <strong>Recommended next step:</strong>
+      Review the affected cases, confirm the common failure point,
+      and determine whether a Development investigation is required.
+    </p>
+
+    <p style="color:var(--muted);font-size:12px;">
+      AI-generated draft — human review required before sending.
+    </p>
+
+    <button
+      class="primary"
+      onclick="closeModal()"
+    >
+      Review complete
+    </button>
+  `;
+
+  showModal(
+    'Draft Escalation to Development',
+    content
+  );
 
 }
 
-if (id === 'CASE-1040') {
 
-content = `
-<p><strong>Customer:</strong> James Lee</p>
-<p><strong>Type:</strong> End User</p>
-<p><strong>Issue:</strong> Unable to access account.</p>
-<p><strong>Priority:</strong> Medium</p>
-<p><strong>Recommended action:</strong> Confirm troubleshooting steps and escalate with relevant technical details.</p>
-`;
-
-}
-
-showModal(id, content);
-
-}
+/* =========================================================
+   AI ASSISTANT
+   ========================================================= */
 
 function analyzeIssue() {
 
-const text = document.getElementById('issueInput').value.toLowerCase();
+  const text =
+    document.getElementById('issueInput')
+      .value
+      .toLowerCase();
 
-if (!text.trim()) {
+  if (!text.trim()) {
 
-alert('Please describe the customer issue first.');
+    alert(
+      'Please describe the customer issue first.'
+    );
 
-return;
+    return;
+  }
+
+  let type =
+    'General Support';
+
+  let priority =
+    'Medium';
+
+  let action =
+    'Review the customer\'s details and identify the appropriate next step.';
+
+  let response =
+    'Thank you for reaching out. I understand your concern. I’ll review this and make sure we identify the right next step for you.';
+
+  let escalation =
+    'Not required initially.';
+
+
+  if (
+    text.includes('reward') ||
+    text.includes('delivery') ||
+    text.includes('received')
+  ) {
+
+    type =
+      'Reward Delivery';
+
+    action =
+      'Check reward fulfillment status and verify the customer account details.';
+
+    response =
+      'Thanks for reaching out. I understand you’re waiting for your reward. I’ll check the fulfillment status and make sure everything is in order. We’ll update you as soon as we have more information.';
+
+  }
+
+
+  if (
+    text.includes('error') ||
+    text.includes('bug') ||
+    text.includes('technical') ||
+    text.includes('not working')
+  ) {
+
+    priority =
+      'High';
+
+    action =
+      'Gather reproduction steps and relevant customer details, then escalate to Development.';
+
+    escalation =
+      'Recommended — technical escalation.';
+
+  }
+
+
+  document.getElementById('issueType').textContent =
+    type;
+
+  document.getElementById('priority').textContent =
+    priority;
+
+  document.getElementById('nextAction').textContent =
+    action;
+
+  document.getElementById('response').textContent =
+    response;
+
+  document.getElementById('escalation').textContent =
+    escalation;
+
+  document.getElementById('aiResult').style.display =
+    'block';
 
 }
 
-let type = 'General Support';
-let priority = 'Medium';
-let action = 'Review the customer\'s details and identify the appropriate next step.';
-let response = 'Thank you for reaching out. I understand your concern. I’ll review this and make sure we identify the right next step for you.';
-let escalation = 'Not required initially.';
 
-if (
-text.includes('reward') ||
-text.includes('delivery') ||
-text.includes('received')
-) {
-
-type = 'Reward Delivery';
-
-action = 'Check reward fulfillment status and verify the customer account details.';
-
-response = 'Thanks for reaching out. I understand you’re waiting for your reward. I’ll check the fulfillment status and make sure everything is in order. We’ll update you as soon as we have more information.';
-
-}
-
-if (
-text.includes('error') ||
-text.includes('bug') ||
-text.includes('technical') ||
-text.includes('not working')
-) {
-
-priority = 'High';
-
-action = 'Gather reproduction steps and relevant customer details, then escalate to Development.';
-
-escalation = 'Recommended — technical escalation.';
-
-}
-
-document.getElementById('issueType').textContent = type;
-document.getElementById('priority').textContent = priority;
-document.getElementById('nextAction').textContent = action;
-document.getElementById('response').textContent = response;
-document.getElementById('escalation').textContent = escalation;
-document.getElementById('aiResult').style.display = 'block';
-
-}
+/* =========================================================
+   KNOWLEDGE BASE
+   ========================================================= */
 
 function showSOP(title) {
 
-let content = '';
+  let content = '';
 
-if (title === 'Reward Delivery') {
+  if (title === 'Reward Delivery') {
 
-content = `
-<ol>
-<li>Verify customer details.</li>
-<li>Check fulfillment status.</li>
-<li>Confirm expected delivery timeframe.</li>
-<li>Communicate the next step clearly.</li>
-<li>Escalate if technical or outside SLA.</li>
-<li>Record the outcome.</li>
-</ol>
-`;
+    content = `
+      <ol>
+        <li>Verify customer details.</li>
+        <li>Check fulfillment status.</li>
+        <li>Confirm expected delivery timeframe.</li>
+        <li>Communicate the next step clearly.</li>
+        <li>Escalate if technical or outside SLA.</li>
+        <li>Record the outcome.</li>
+      </ol>
+    `;
+
+  }
+
+
+  if (title === 'Account Access') {
+
+    content = `
+      <ol>
+        <li>Verify customer identity.</li>
+        <li>Confirm the reported access issue.</li>
+        <li>Guide the customer through standard troubleshooting.</li>
+        <li>Escalate technical issues when required.</li>
+        <li>Document the resolution.</li>
+      </ol>
+    `;
+
+  }
+
+
+  if (title === 'Escalation Process') {
+
+    content = `
+      <ol>
+        <li>Identify the issue.</li>
+        <li>Complete standard troubleshooting.</li>
+        <li>Gather relevant customer and technical information.</li>
+        <li>Escalate to the appropriate team.</li>
+        <li>Track ownership and SLA.</li>
+        <li>Follow up with the customer.</li>
+      </ol>
+    `;
+
+  }
+
+
+  if (title === 'Customer Feedback Review') {
+
+    content = `
+      <ol>
+        <li>Review CSAT and NPS feedback.</li>
+        <li>Identify recurring themes.</li>
+        <li>Separate individual issues from systemic issues.</li>
+        <li>Identify possible process improvements.</li>
+        <li>Track changes and monitor future feedback.</li>
+      </ol>
+    `;
+
+  }
+
+  showModal(title, content);
 
 }
 
-if (title === 'Account Access') {
 
-content = `
-<ol>
-<li>Verify customer identity.</li>
-<li>Confirm the reported access issue.</li>
-<li>Guide the customer through standard troubleshooting.</li>
-<li>Escalate technical issues when required.</li>
-<li>Document the resolution.</li>
-</ol>
-`;
-
-}
-
-if (title === 'Escalation Process') {
-
-content = `
-<ol>
-<li>Identify the issue.</li>
-<li>Complete standard troubleshooting.</li>
-<li>Gather relevant customer and technical information.</li>
-<li>Escalate to the appropriate team.</li>
-<li>Track ownership and SLA.</li>
-<li>Follow up with the customer.</li>
-</ol>
-`;
-
-}
-
-if (title === 'Customer Feedback Review') {
-
-content = `
-<ol>
-<li>Review CSAT and NPS feedback.</li>
-<li>Identify recurring themes.</li>
-<li>Separate individual issues from systemic issues.</li>
-<li>Identify possible process improvements.</li>
-<li>Track changes and monitor future feedback.</li>
-</ol>
-`;
-
-}
-
-showModal(title, content);
-
-}
+/* =========================================================
+   MODAL
+   ========================================================= */
 
 function showModal(title, content) {
 
-document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalTitle').textContent =
+    title;
 
-document.getElementById('modalContent').innerHTML = content;
+  document.getElementById('modalContent').innerHTML =
+    content;
 
-document.getElementById('modal').style.display = 'flex';
+  document.getElementById('modal').style.display =
+    'flex';
 
 }
+
 
 function closeModal() {
 
-document.getElementById('modal').style.display = 'none';
+  document.getElementById('modal').style.display =
+    'none';
 
 }
+
+
+/* =========================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+   ========================================================= */
+
+document.getElementById('modal').addEventListener(
+  'click',
+  function(event) {
+
+    if (event.target === this) {
+      closeModal();
+    }
+
+  }
+);
 
 </script>
 
